@@ -1,0 +1,45 @@
+.desktop-icon {
+    display: inline-block;
+    width: 1.25rem;
+    height: 1.25rem;
+    background-repeat: no-repeat;
+    background-size: cover;
+    
+    background-image: url(../icon/monitor.svg);
+    vertical-align: middle;
+
+    
+}
+
+.tablet-icon {
+    display: inline-block;
+    width: 1.25rem;
+    height: 1.25rem;
+    background-repeat: no-repeat;
+    background-size: cover;
+    
+    background-image: url(../icon/tablet.svg);
+    vertical-align: middle;
+}
+
+.phone-icon {
+    display: inline-block;
+    width: 1.25rem;
+    height: 1.25rem;
+    background-repeat: no-repeat;
+    background-size: cover;
+    
+    background-image: url(../icon/smartphone.svg);
+    vertical-align: middle;
+}
+
+.search-icon {
+    display: inline-block;
+    width: 1.25rem;
+    height: 1.25rem;
+    background-repeat: no-repeat;
+    background-size: cover;
+    
+    background-image: url(../icon/search.svg    );
+    vertical-align: middle;
+}
