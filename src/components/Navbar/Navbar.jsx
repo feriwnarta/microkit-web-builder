@@ -3,9 +3,20 @@ import ButtonResponsive from '../Button/ButtonResponsive';
 import ButtonOutline from '../Button/ButtonOutline';
 import ButtonPrimary from '../Button/ButtonPrimary';
 import ButtonAvatar from '../Button/ButtonAvatar';
+import LivePreview from '../../services/LivePreview/live';
+import { useRenderContext } from '../../context/RenderContext';
 
+
+function livePreview(html) {
+
+    LivePreview(html);
+
+}
 
 function Navbar() {
+    const { renderContent } = useRenderContext();
+
+
     const style = {
         margin: "0 3rem",
         padding: "0px"
@@ -34,8 +45,8 @@ function Navbar() {
                     </ul>
 
                     <div className='d-flex flex-row'>
-                        <ButtonOutline>Live Preview</ButtonOutline>
-                        <ButtonPrimary className='ml-075'>Site to Code</ButtonPrimary>
+                        <ButtonOutline id='btnLivePreview' onClick={() => livePreview(renderContent)}>Live Preview</ButtonOutline>
+                        <ButtonPrimary className='ml-075' id='btnSiteToCode'>Site to Code</ButtonPrimary>
                         <ButtonAvatar className='ml-075'></ButtonAvatar>
                     </div>
                 </div>

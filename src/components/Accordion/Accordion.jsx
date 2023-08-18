@@ -15,7 +15,7 @@ export default function Accordion() {
         var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-toggle="popover"]'));
         popoverTriggerList.map(function (popoverTriggerEl) {
             const content = `
-            <img src="/src/assets/Nav 2.png"/>
+            <img id="component" src="/src/assets/Nav 2.png"/>       
             `; // Isi konten dinamis di sini
 
             // Buat objek Popover dan set properti sanitize langsung
@@ -138,7 +138,7 @@ export default function Accordion() {
             <div className="accordion-item">
                 <h2 className="accordion-header" id="headingOn2">
                     <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-                        Navbars
+                        Hero Sections
                     </button>
                 </h2>
                 <div id="collapseTwo" className="accordion-collapse collapse" aria-labelledby="headingOn2" data-bs-parent="#accordionExample">

@@ -145,12 +145,13 @@ body {
     background: var(--neutral-30, #EDEDED);
 }
 
-
-
-
 .popover-body {
     padding: 1rem;
     width: 24.5rem !important;
+}
+
+#component:not(:first-child) {
+    margin-top: 1.25rem;
 }
 
 #showview {
