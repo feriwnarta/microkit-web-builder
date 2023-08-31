@@ -5,13 +5,31 @@ import AccordionService from './Services/AccordionService';
 export default function Accordion() {
     const { setRenderContent } = useRenderContext();
     const [activePopover, setActivePopover] = useState(null);
+    const [firstClick, setFirstClick] = useState(false);
+
+    const [mainHtml, setMainHtml] = useState('');
+    let [tempHtml, setTempHtml] = useState('');
+    let [additionHtml, setAdditionHtml] = useState(null);
 
     useEffect(() => {
+        // set temporary html
+        if (additionHtml !== null) {
+            setTempHtml(mainHtml.replace('%ADDITIONAL_CONTENT%', additionHtml));
+
+        }
+
+        // render content utama
+        if (tempHtml !== '') {
+            setRenderContent(tempHtml);
+        }
+
+
         const popoverTriggerList = document.querySelectorAll('[data-toggle="popover"]');
         let popover = null;
 
         const clickHandler = async (event) => {
             const clickedItemId = event.target.id;
+            console.log(clickedItemId);
             const content = await getPopoverContent(clickedItemId);
 
             if (activePopover !== null) {
@@ -38,19 +56,33 @@ export default function Accordion() {
                         el.addEventListener('click', () => handleImageClick(popover, el));
                     }
                 });
-
-
             }
         };
 
-
-        const handleImageClick = (popover, element) => {
+        const handleImageClick = async (popover, element) => {
+            // hide pop over yang terbuka
             popover.hide();
-            console.log(element);
-            let html = `
-                <h1>Popover content clicked!</h1>
-            `;
-            setRenderContent(html);
+
+            let header = null;
+
+            // cek apakah pertama kali component diklik
+            // jika bukan. maka tambahkan header
+            if (!firstClick) {
+                header = await AccordionService.getHeaderTemplate();
+                setMainHtml(header);
+                setFirstClick(true);
+            }
+
+            // dapatkan source code per single component melalui id thumbnail
+            const codeElement = await AccordionService.getComponentCode(element.id);
+
+            // cek terlebih dahulu apakah addition html kosong
+            if (additionHtml === null) {
+                setAdditionHtml(codeElement);
+            } else {
+                let additionElement = additionHtml + codeElement;
+                setAdditionHtml(additionElement);
+            }
         };
 
         popoverTriggerList.forEach(popoverTriggerEl => {
@@ -64,11 +96,16 @@ export default function Accordion() {
                 popoverTriggerEl.removeEventListener('click', clickHandler);
             });
         };
-    });
+    }, [additionHtml, mainHtml, tempHtml, activePopover, firstClick, setRenderContent]);
 
     async function getPopoverContent(itemId) {
+        const src = 'http://127.0.0.1:8000/component/thumbnail/';
         const element = await AccordionService.getComponentPopOver(itemId);
-        return element
+        const imgTags = element.component.map(element => {
+            return `<img src="${src}${element.img}" class="component" id="${element.id}"/>`;
+        });
+        const combinedImgTags = imgTags.join('');
+        return combinedImgTags;
     }
 
     return (
@@ -93,18 +130,54 @@ export default function Accordion() {
                     data-bs-parent="#accordionExample"
                 >
                     <div className="accordion-body d-flex flex-column align-items-start">
-                        <p data-toggle="popover" className='sidebar-item' id="all">
+                        <button data-toggle="popover" className='sidebar-item btn btn-sidebar' id="all-navbar">
                             All
-                        </p>
-                        <p data-toggle="popover" className='sidebar-item' id="culinary">
+                        </button>
+                        <button data-toggle="popover" className='sidebar-item btn btn-sidebar' id="culinary">
                             Culinary
-                        </p>
-                        <p data-toggle="popover" className='sidebar-item' id="fashion">
+                        </button>
+                        <button data-toggle="popover" className='sidebar-item btn btn-sidebar' id="fashion">
                             Fashion
-                        </p>
-                        <p data-toggle="popover" className='sidebar-item' id="services">
+                        </button>
+                        <button data-toggle="popover" className='sidebar-item btn btn-sidebar' id="services">
                             Services
-                        </p>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div className="accordion-item">
+                <h2 className="accordion-header" id="headingOne">
+                    <button
+                        className="accordion-button collapsed"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#collapseTwo"
+                        aria-expanded="true"
+                        aria-controls="collapseTwo"
+                    >
+                        Hero sections
+                    </button>
+                </h2>
+                <div
+                    id="collapseTwo"
+                    className="accordion-collapse collapse"
+                    aria-labelledby="headingOne"
+                    data-bs-parent="#accordionExample"
+                >
+                    <div className="accordion-body d-flex flex-column align-items-start">
+                        <button data-toggle="popover" className='sidebar-item btn btn-sidebar' id="all-hero">
+                            All
+                        </button>
+                        <button data-toggle="popover" className='sidebar-item btn btn-sidebar' id="culinary">
+                            Culinary
+                        </button>
+                        <button data-toggle="popover" className='sidebar-item btn btn-sidebar' id="fashion">
+                            Fashion
+                        </button>
+                        <button data-toggle="popover" className='sidebar-item btn btn-sidebar' id="services">
+                            Services
+                        </button>
                     </div>
                 </div>
             </div>
