@@ -23,7 +23,6 @@ export default function Accordion() {
             setRenderContent(tempHtml);
         }
 
-
         const popoverTriggerList = document.querySelectorAll('[data-toggle="popover"]');
         let popover = null;
 
@@ -97,6 +96,8 @@ export default function Accordion() {
             });
         };
     }, [additionHtml, mainHtml, tempHtml, activePopover, firstClick, setRenderContent]);
+
+
 
     async function getPopoverContent(itemId) {
         const src = 'http://127.0.0.1:8000/component/thumbnail/';

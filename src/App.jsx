@@ -14,9 +14,7 @@ export default function App() {
                 <Navbar />
                 <div className="d-flex flex-row">
                     <Sidebar />
-
                     <Render></Render>
-
                 </div>
             </div>
         </RenderContextProvider>
