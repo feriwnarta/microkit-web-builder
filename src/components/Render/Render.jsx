@@ -2,17 +2,18 @@ import { useEffect, useRef, useState } from "react";
 import { useRenderContext } from "../../context/RenderContext";
 
 export default function Render() {
-    const { renderContent, sizeRender } = useRenderContext();
+    const { renderContent, sizeRender, setRenderContent } = useRenderContext();
 
     const [editedElement, setEditedElement] = useState(null);
     const iframeDocumentRef = useRef(null);
+    const autoSaveTimeoutRef = useRef(null);
 
     useEffect(() => {
-
         const colorPickerChangeHandler = (event) => {
             if (editedElement) {
                 const selectedColor = event.target.value;
                 editedElement.style.color = selectedColor;
+                scheduleAutoSave();
             }
         };
 
@@ -20,6 +21,7 @@ export default function Render() {
             if (editedElement) {
                 const selectedColor = event.target.value;
                 editedElement.style.backgroundColor = selectedColor;
+                scheduleAutoSave();
             }
         };
 
@@ -37,18 +39,16 @@ export default function Render() {
                 colorPicker.removeEventListener('input', colorPickerChangeHandler);
 
                 const colorPickerBg = iframeDocumentRef.current.getElementById('colorPickerBg');
-                colorPickerBg.removeEventListener('input', colorPickerBgChangeHandler)
+                colorPickerBg.removeEventListener('input', colorPickerBgChangeHandler);
             }
         };
     }, [editedElement]);
-
 
     const handleIframeLoad = (event) => {
         const iframeDocument = event.target.contentDocument;
         iframeDocumentRef.current = iframeDocument;
 
         const allElements = iframeDocument.querySelectorAll('p, h1, h2, h3, h4, h5, a, button, nav');
-
         allElements.forEach(element => {
             if (element.textContent.trim() !== '') {
                 element.addEventListener('click', (e) => {
@@ -63,7 +63,6 @@ export default function Render() {
             }
         });
 
-        // mengembalikan content menjadi tidak editable
         iframeDocument.addEventListener('click', (e) => {
             const clickedElement = e.target;
             const isEditable = clickedElement.isContentEditable;
@@ -76,7 +75,6 @@ export default function Render() {
             }
         });
 
-        // membuat border saat element dihover
         const targetElements = iframeDocument.querySelectorAll('p, h1, h2, h3, a, nav, button');
         targetElements.forEach(element => {
             element.addEventListener('mouseover', () => {
@@ -88,7 +86,6 @@ export default function Render() {
             });
         });
 
-        // mencegah tag a diklik
         const iframeLinks = iframeDocument.querySelectorAll("a");
         iframeLinks.forEach(link => {
             link.addEventListener("click", event => {
@@ -96,15 +93,12 @@ export default function Render() {
             });
         });
 
-        // Mencegah tag button diklik
         const iframeButtons = iframeDocument.querySelectorAll("button");
         iframeButtons.forEach(button => {
             button.addEventListener("click", event => {
                 event.preventDefault();
             });
         });
-
-
     };
 
     const openOffcanvas = (document) => {
@@ -127,7 +121,6 @@ export default function Render() {
                         <label for="colorPicker">Pilih Warna Tulisan</label>
                         <input type="color" id="colorPicker" name="colorPicker" value="#ff0000">
                     </div>
-
                     <div class="d-flex flex-column">
                         <label for="colorPickerBg">Ganti Warna Bg</label>
                         <input type="color" id="colorPickerBg" name="colorPickerBg" value="#ff0000">
@@ -136,6 +129,16 @@ export default function Render() {
             </div>
         `;
         iframeDocument.body.appendChild(customOffcanvas);
+    };
+
+    const scheduleAutoSave = () => {
+        clearTimeout(autoSaveTimeoutRef.current);
+        autoSaveTimeoutRef.current = setTimeout(autoSave, 2000);
+    };
+
+    // ubah fungsi ini untuk menerapkah fitur auto save
+    const autoSave = () => {
+        // atuo
     };
 
     return (
