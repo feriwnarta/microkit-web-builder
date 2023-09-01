@@ -8,13 +8,38 @@ export default function Render() {
     const iframeDocumentRef = useRef(null);
 
     useEffect(() => {
+
+        const colorPickerChangeHandler = (event) => {
+            if (editedElement) {
+                const selectedColor = event.target.value;
+                editedElement.style.color = selectedColor;
+            }
+        };
+
+        const colorPickerBgChangeHandler = (event) => {
+            if (editedElement) {
+                const selectedColor = event.target.value;
+                editedElement.style.backgroundColor = selectedColor;
+            }
+        };
+
         if (editedElement) {
-            // button dummy ganti color
-            const btnColor = iframeDocumentRef.current.getElementById('changeColor');
-            btnColor.addEventListener('click', () => {
-                editedElement.style.color = 'red';
-            });
+            const colorPicker = iframeDocumentRef.current.getElementById('colorPicker');
+            colorPicker.addEventListener('input', colorPickerChangeHandler);
+
+            const colorPickerBg = iframeDocumentRef.current.getElementById('colorPickerBg');
+            colorPickerBg.addEventListener('input', colorPickerBgChangeHandler);
         }
+
+        return () => {
+            if (editedElement) {
+                const colorPicker = iframeDocumentRef.current.getElementById('colorPicker');
+                colorPicker.removeEventListener('input', colorPickerChangeHandler);
+
+                const colorPickerBg = iframeDocumentRef.current.getElementById('colorPickerBg');
+                colorPickerBg.removeEventListener('input', colorPickerBgChangeHandler)
+            }
+        };
     }, [editedElement]);
 
 
@@ -22,11 +47,12 @@ export default function Render() {
         const iframeDocument = event.target.contentDocument;
         iframeDocumentRef.current = iframeDocument;
 
-        const allElements = iframeDocument.querySelectorAll('p, h1, h2, h3, h4, h5, a, button');
+        const allElements = iframeDocument.querySelectorAll('p, h1, h2, h3, h4, h5, a, button, nav');
 
         allElements.forEach(element => {
             if (element.textContent.trim() !== '') {
-                element.addEventListener('click', () => {
+                element.addEventListener('click', (e) => {
+                    e.stopPropagation();
                     element.contentEditable = true;
                     element.style.outline = '1px solid blue';
 
@@ -93,11 +119,19 @@ export default function Render() {
         customOffcanvas.innerHTML = `
             <div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
                 <div class="offcanvas-header">
-                    <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Offcanvas with body scrolling</h5>
+                    <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Edit</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                 </div>
                 <div class="offcanvas-body">
-                    <button type="button" class="btn btn-primary" id="changeColor">Change Color</button>
+                    <div class="d-flex flex-column">
+                        <label for="colorPicker">Pilih Warna Tulisan</label>
+                        <input type="color" id="colorPicker" name="colorPicker" value="#ff0000">
+                    </div>
+
+                    <div class="d-flex flex-column">
+                        <label for="colorPickerBg">Ganti Warna Bg</label>
+                        <input type="color" id="colorPickerBg" name="colorPickerBg" value="#ff0000">
+                    </div>
                 </div>
             </div>
         `;
