@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRenderContext } from "../../context/RenderContext";
 
 export default function Render() {
-    const { renderContent, sizeRender, setRenderContent } = useRenderContext();
+    const { renderContent, sizeRender, setRenderContent} = useRenderContext();
 
     const [editedElement, setEditedElement] = useState(null);
     const iframeDocumentRef = useRef(null);
@@ -31,6 +31,13 @@ export default function Render() {
 
             const colorPickerBg = iframeDocumentRef.current.getElementById('colorPickerBg');
             colorPickerBg.addEventListener('input', colorPickerBgChangeHandler);
+
+            const save = iframeDocumentRef.current.getElementById('btnSave');
+            save.addEventListener('click', () => {
+                console.log(iframeDocumentRef.current.documentElement.outerHTML);
+                // buat main html berada di context !!!
+                // setRenderContent(iframeDocumentRef.current.documentElement.outer);
+            });
         }
 
         return () => {
@@ -125,6 +132,7 @@ export default function Render() {
                         <label for="colorPickerBg">Ganti Warna Bg</label>
                         <input type="color" id="colorPickerBg" name="colorPickerBg" value="#ff0000">
                     </div>
+                    <button class="btn btn-primary" id="btnSave"></button>
                 </div>
             </div>
         `;
